@@ -9,6 +9,7 @@ from fastapi import (
 from fastapi.responses import (
     RedirectResponse,
 )
+
 from schemas.short_url import ShortUrl
 from schemas.film_library import Movie
 
@@ -96,7 +97,7 @@ def read_short_url_details(
 
 MOVIES = [
     Movie(
-        id=1,
+        movie_id=1,
         title="Москва слезам не верит",
         year=1979,
         description="Москва, 1950-е годы. Три молодые провинциалки приезжают в Москву в поисках того,"
@@ -108,7 +109,7 @@ MOVIES = [
         genre="драма, комедия",
     ),
     Movie(
-        id=2,
+        movie_id=2,
         title="Живая сталь",
         year=2011,
         description="События фильма происходят в будущем, где бокс запрещен за негуманностью и заменен боями"
@@ -120,7 +121,7 @@ MOVIES = [
         genre="научно-фантастическая семейная драма",
     ),
     Movie(
-        id=3,
+        movie_id=3,
         title="Великий уравнитель",
         year=2014,
         description="Бывший агент ЦРУ, пожилой афроамериканец Роберт Макколл, решил начать жизнь заново,"
@@ -133,3 +134,18 @@ MOVIES = [
         genre="боевик-триллер",
     ),
 ]
+
+
+@app.get(
+    "/movies/",
+    response_model=list[Movie],
+)
+def read_movie_details():
+    return MOVIES
+
+
+@app.get("/movie_id/")
+def read_movie_id(movie_id: int):
+    for movie in MOVIES:
+        if movie.movie_id == movie_id:
+            return movie
