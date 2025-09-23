@@ -1,13 +1,22 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+
+from fastapi import (
+    Depends,
+    APIRouter,
+    status,
+)
+
 
 from .crud import SHORT_URLS
 
 from .dependacies import (
     prefetch_short_url,
 )
-from schemas.short_url import ShortUrl
+from schemas.short_url import (
+    ShortUrl,
+    ShortUrlCreate,
+)
 
 router = APIRouter(
     prefix="/short-urls",
@@ -21,6 +30,17 @@ router = APIRouter(
 )
 def read_short_urls_list():
     return SHORT_URLS
+
+
+@router.post(
+    "/",
+    response_model=ShortUrl,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_short_url(short_url_create: ShortUrlCreate):
+    return ShortUrl(
+        **short_url_create.model_dump(),
+    )
 
 
 @router.get(
