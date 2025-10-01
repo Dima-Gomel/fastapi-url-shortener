@@ -39,7 +39,9 @@ ShortUrlBySlug = Annotated[
     "/",
     response_model=ShortUrl,
 )
-def read_short_url_details(url: ShortUrlBySlug) -> ShortUrl:
+def read_short_url_details(
+    url: ShortUrlBySlug,
+) -> ShortUrl:
     return url
 
 
@@ -49,14 +51,19 @@ def read_short_url_details(url: ShortUrlBySlug) -> ShortUrl:
 )
 def update_short_url_details(
     url: ShortUrlBySlug,
-    short_url_in=ShortUrlUpdate,
+    short_url_in: ShortUrlUpdate,
 ):
-    return storage.update(short_url=url, short_url_in=short_url_in)
+    return storage.update(
+        short_url=url,
+        short_url_in=short_url_in,
+    )
 
 
 @router.delete(
     "/",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_short_url(url: ShortUrlBySlug) -> None:
+def delete_short_url(
+    url: ShortUrlBySlug,
+) -> None:
     storage.delete(short_url=url)

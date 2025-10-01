@@ -7,7 +7,6 @@ from pydantic import BaseModel, AnyHttpUrl
 
 class ShortUrlBase(BaseModel):
     target_url: AnyHttpUrl
-
     description: Annotated[
         str,
         MaxLen(200),
@@ -31,7 +30,10 @@ class ShortUrlUpdate(ShortUrlBase):
     Модель для обновления информации о сокращенной ссылки
     """
 
-    pass
+    description: Annotated[
+        str,
+        MaxLen(200),
+    ]
 
 
 class ShortUrl(ShortUrlBase):
