@@ -1,10 +1,9 @@
 from fastapi import (
     APIRouter,
     status,
+    Depends,
 )
-from pydantic import json
 
-from api.api_v1.short_urls.crud import storage, ShortUrlsStorage
 
 from schemas.short_url import (
     ShortUrl,
@@ -12,10 +11,13 @@ from schemas.short_url import (
     ShortUrlRead,
 )
 from .details_views import router as detail_router
+from ..crud import storage
+from ..dependacies import save_storage_state
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
+    dependencies=[Depends(save_storage_state)],
 )
 router.include_router(detail_router)
 
@@ -36,5 +38,4 @@ def read_short_urls_list() -> list[ShortUrl]:
 def create_short_url(
     short_url_create: ShortUrlCreate,
 ) -> ShortUrl:
-    short_url = storage.create(short_url_create)
-    return short_url
+    return storage.create(short_url_create)
