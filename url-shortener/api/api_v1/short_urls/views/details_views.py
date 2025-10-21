@@ -7,7 +7,12 @@ from fastapi import (
 from starlette import status
 
 from api.api_v1.short_urls.crud import storage
-from api.api_v1.short_urls.dependacies import prefetch_short_url
+
+from api.api_v1.short_urls.dependacies import (
+    prefetch_short_url,
+    api_token_required,
+)
+
 from schemas.short_url import (
     ShortUrl,
     ShortUrlUpdate,
@@ -54,6 +59,7 @@ def read_short_url_details(
 def update_short_url_details(
     url: ShortUrlBySlug,
     short_url_in: ShortUrlUpdate,
+    _=Depends(api_token_required),
 ):
     return storage.update(
         short_url=url,
@@ -68,6 +74,7 @@ def update_short_url_details(
 def update_short_url_details_partial(
     url: ShortUrlBySlug,
     short_url_in: ShortUrlPartialUpdate,
+    _=Depends(api_token_required),
 ) -> ShortUrl:
     return storage.update_partial(
         short_url=url,
@@ -81,5 +88,6 @@ def update_short_url_details_partial(
 )
 def delete_short_url(
     url: ShortUrlBySlug,
+    _=Depends(api_token_required),
 ) -> None:
     storage.delete(short_url=url)

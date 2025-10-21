@@ -1,12 +1,16 @@
 import logging
+from queue import Queue
+from typing import Annotated
 
 from fastapi import (
     HTTPException,
     BackgroundTasks,
     Request,
+    Query,
+    status,
 )
-from starlette import status
 
+from core.config import API_TOKENS
 from .crud import storage
 from schemas.short_url import ShortUrl
 
@@ -46,3 +50,16 @@ def save_storage_state(
     if request.method in UNSAFE_METHODS:
         log.info("Add background task to save storage")
         background_tasks.add_task(storage.save_state)
+
+
+def api_token_required(
+    api_token: Annotated[
+        str,
+        Query(),
+    ],
+):
+    if api_token not in API_TOKENS:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API token",
+        )
