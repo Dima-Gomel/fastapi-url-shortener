@@ -15,13 +15,28 @@ from .details_views import router as detail_router
 from ..crud import storage
 from ..dependacies import (
     save_storage_state,
-    api_token_required,
+    api_token_required_for_unsafe_methods,
 )
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
-    dependencies=[Depends(save_storage_state)],
+    dependencies=[
+        Depends(save_storage_state),
+        Depends(api_token_required_for_unsafe_methods),
+    ],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthenticated. Only for unsafe methods.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Invalid API token",
+                    },
+                },
+            },
+        },
+    },
 )
 router.include_router(detail_router)
 
@@ -41,6 +56,5 @@ def read_short_urls_list() -> list[ShortUrl]:
 )
 def create_short_url(
     short_url_create: ShortUrlCreate,
-    _=Depends(api_token_required),
 ) -> ShortUrl:
     return storage.create(short_url_create)
