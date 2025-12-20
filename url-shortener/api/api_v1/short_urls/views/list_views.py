@@ -14,17 +14,16 @@ from .details_views import router as detail_router
 from ..crud import storage
 from ..dependacies import (
     save_storage_state,
-    # api_token_required_for_unsafe_methods,
-    user_basic_auth_required_for_unsafe_methods,
+    api_token_or_url_required_for_unsafe_methods,
 )
+
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
     dependencies=[
         Depends(save_storage_state),
-        # Depends(api_token_required_for_unsafe_methods),
-        Depends(user_basic_auth_required_for_unsafe_methods),
+        Depends(api_token_or_url_required_for_unsafe_methods),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
