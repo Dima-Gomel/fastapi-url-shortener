@@ -20,7 +20,9 @@ from core.config import (
 )
 from .crud import storage
 from schemas.short_url import ShortUrl
-from .redis import redis_tokens
+from api.api_v1.auth.services import (
+    redis_tokens,
+)
 
 log = logging.getLogger(__name__)
 
