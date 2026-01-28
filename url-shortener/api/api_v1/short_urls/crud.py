@@ -63,10 +63,17 @@ class ShortUrlsStorage(BaseModel):
         log.warning("Recovered data from storage file.")
 
     def get(self) -> list[ShortUrl]:
-        return list(self.slug_to_short_url.values())
+        return [
+            ShortUrl.model_validate_json(values)
+            for values in redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME)
+        ]
 
     def get_by_slug(self, slug: str) -> ShortUrl | None:
-        return self.slug_to_short_url.get(slug)
+        if data := redis.hget(
+            name=config.REDIS_SHORT_URLS_HASH_NAME,
+            key=slug,
+        ):
+            return ShortUrl.model_validate_json(data)
 
     def create(
         self,
