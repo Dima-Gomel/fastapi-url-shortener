@@ -11,9 +11,8 @@ from schemas.short_url import (
 )
 
 from .details_views import router as detail_router
-from ..crud import storage
-from ..dependacies import (
-    save_storage_state,
+from api.api_v1.short_urls.crud import storage
+from api.api_v1.short_urls.dependacies import (
     api_token_or_url_required_for_unsafe_methods,
 )
 
@@ -22,7 +21,6 @@ router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
     dependencies=[
-        Depends(save_storage_state),
         Depends(api_token_or_url_required_for_unsafe_methods),
     ],
     responses={
