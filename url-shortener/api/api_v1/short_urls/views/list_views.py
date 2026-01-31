@@ -12,7 +12,7 @@ from schemas.short_url import (
 )
 
 from .details_views import router as detail_router
-from api.api_v1.short_urls.crud import storage
+from api.api_v1.short_urls.crud import storage, ShortUrlAlreadyExists
 from api.api_v1.short_urls.dependacies import (
     api_token_or_url_required_for_unsafe_methods,
 )
@@ -52,14 +52,26 @@ def read_short_urls_list() -> list[ShortUrl]:
     "/",
     response_model=ShortUrlRead,
     status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_409_CONFLICT: {
+            "description": "A short url with such by slug already exists.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Short URL with slug='name' already exists.",
+                    }
+                }
+            },
+        }
+    },
 )
 def create_short_url(
     short_url_create: ShortUrlCreate,
 ) -> ShortUrl:
-    if not storage.get_by_slug(short_url_create.slug):
-        return storage.create(short_url_create)
-
-    raise HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail=f"Short URL with slug={short_url_create.slug!r} already exists.",
-    )
+    try:
+        return storage.create_or_raise_if_exists(short_url_create)
+    except ShortUrlAlreadyExists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Short URL with slug={short_url_create.slug!r} already exists.",
+        )
