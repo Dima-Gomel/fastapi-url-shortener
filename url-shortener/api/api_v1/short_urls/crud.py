@@ -5,6 +5,10 @@ Update - обновление
 Delete - удаление
 """
 
+__all__ = ("storage",)
+
+from typing import cast, Iterable
+
 import logging
 
 from pydantic import (
@@ -55,13 +59,18 @@ class ShortUrlsStorage(BaseModel):
     def get(self) -> list[ShortUrl]:
         return [
             ShortUrl.model_validate_json(values)
-            for values in redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME)
+            for values in cast(
+                Iterable[str],
+                redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME),
+            )
         ]
 
     def exists(self, slug: str) -> bool:
-        return redis.hexists(
-            name=config.REDIS_SHORT_URLS_HASH_NAME,
-            key=slug,
+        return bool(
+            redis.hexists(
+                name=config.REDIS_SHORT_URLS_HASH_NAME,
+                key=slug,
+            )
         )
 
     def get_by_slug(self, slug: str) -> ShortUrl | None:
@@ -69,7 +78,10 @@ class ShortUrlsStorage(BaseModel):
             name=config.REDIS_SHORT_URLS_HASH_NAME,
             key=slug,
         ):
+            assert isinstance(data, str)
             return ShortUrl.model_validate_json(data)
+
+        return None
 
     def create(
         self,
@@ -116,7 +128,7 @@ class ShortUrlsStorage(BaseModel):
         self,
         short_url: ShortUrl,
         short_url_in: ShortUrlPartialUpdate,
-    ):
+    ) -> ShortUrl:
         for field_name, value in short_url_in.model_dump(exclude_unset=True).items():
             setattr(short_url, field_name, value)
         self.save_short_url(short_url)
