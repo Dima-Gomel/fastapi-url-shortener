@@ -1,9 +1,7 @@
-from pathlib import Path
 from typing import Annotated
 
 from annotated_types import Len, MaxLen
-
-from pydantic import BaseModel, AnyHttpUrl, json
+from pydantic import AnyHttpUrl, BaseModel
 
 DescriptionString = Annotated[
     str,

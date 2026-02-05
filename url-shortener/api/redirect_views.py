@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from starlette.responses import RedirectResponse
 
 from api.api_v1.short_urls.dependacies import prefetch_short_url

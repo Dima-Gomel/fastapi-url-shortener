@@ -6,9 +6,8 @@ from fastapi import (
 )
 
 from api import router as api_router
-from app_lifespan import lifespan
-
 from api.redirect_views import router as redirect_views
+from app_lifespan import lifespan
 from core import config
 
 logging.basicConfig(
