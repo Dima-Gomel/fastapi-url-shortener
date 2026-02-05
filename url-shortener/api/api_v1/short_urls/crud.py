@@ -8,7 +8,8 @@ Delete - удаление
 __all__ = ("storage",)
 
 import logging
-from typing import Iterable, cast
+from collections.abc import Iterable
+from typing import cast
 
 from pydantic import (
     BaseModel,
@@ -31,18 +32,6 @@ redis = Redis(
     db=config.REDIS_DB_SHORT_URLS,
     decode_responses=True,
 )
-
-
-class ShortUrlBaseError(Exception):
-    """
-    Base exception for short url CRUD actions.
-    """
-
-
-class ShortUrlAlreadyExists(ShortUrlBaseError):
-    """
-    Raised on short url creation if such slug already exists.
-    """
 
 
 class ShortUrlsStorage(BaseModel):
@@ -92,11 +81,6 @@ class ShortUrlsStorage(BaseModel):
         self.save_short_url(short_url)
         log.info("Created short url %s to storage.", short_url)
         return short_url
-
-    def create_or_raise_if_exists(self, short_url_in: ShortUrlCreate) -> ShortUrl:
-        if not self.exists(short_url_in.slug):
-            return self.create(short_url_in)
-        raise ShortUrlAlreadyExists(short_url_in.slug)
 
     def delete_by_slug(
         self,
