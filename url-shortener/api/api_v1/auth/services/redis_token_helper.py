@@ -29,7 +29,7 @@ class RedisTokenHelper(AbstractTokensHelper):
             self.redis.sismember(
                 self.tokens_set,
                 token,
-            )
+            ),
         )
 
     def add_token(self, token: str) -> None:
@@ -42,7 +42,7 @@ class RedisTokenHelper(AbstractTokensHelper):
                 self.redis.smembers(
                     self.tokens_set,
                 ),
-            )
+            ),
         )
 
     def delete_token(self, token: str) -> None:

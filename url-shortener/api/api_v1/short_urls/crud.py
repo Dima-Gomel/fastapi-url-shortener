@@ -69,7 +69,7 @@ class ShortUrlsStorage(BaseModel):
             redis.hexists(
                 name=config.REDIS_SHORT_URLS_HASH_NAME,
                 key=slug,
-            )
+            ),
         )
 
     def get_by_slug(self, slug: str) -> ShortUrl | None:

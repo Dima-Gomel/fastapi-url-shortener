@@ -58,10 +58,10 @@ def read_short_urls_list() -> list[ShortUrl]:
                 "application/json": {
                     "example": {
                         "detail": "Short URL with slug='name' already exists.",
-                    }
-                }
+                    },
+                },
             },
-        }
+        },
     },
 )
 def create_short_url(
