@@ -7,7 +7,7 @@ from fastapi import (
 from starlette import status
 
 from api.api_v1.short_urls.crud import storage
-from api.api_v1.short_urls.dependacies import (
+from api.api_v1.short_urls.dependencies import (
     prefetch_short_url,
 )
 from schemas.short_url import (

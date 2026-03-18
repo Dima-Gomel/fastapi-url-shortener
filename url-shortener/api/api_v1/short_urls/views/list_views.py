@@ -5,7 +5,7 @@ from fastapi import (
 )
 
 from api.api_v1.short_urls.crud import storage
-from api.api_v1.short_urls.dependacies import (
+from api.api_v1.short_urls.dependencies import (
     api_token_or_url_required_for_unsafe_methods,
 )
 from schemas.short_url import (
